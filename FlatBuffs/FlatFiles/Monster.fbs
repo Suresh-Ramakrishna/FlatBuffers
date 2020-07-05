@@ -1,0 +1,5 @@
+﻿namespace FlatBuffs;
+table Monster {
+	Id: int32;
+	Name: string;
+}
