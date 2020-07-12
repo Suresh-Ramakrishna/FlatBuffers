@@ -43,13 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlatFiles\Monster.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Axis.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Color.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\ComplexTypes.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Equipment.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Monster.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\ScalarTypes.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Vec3.cs" />
+    <Compile Include="FlatFiles\CompiledFiles\Weapon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="FlatFiles\Monster.fbs" />
+    <None Include="FlatFiles\ComplexTypes.fbs" />
+    <None Include="FlatFiles\ScalarType.fbs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlatFiles\flatc.exe" />
@@ -61,4 +70,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

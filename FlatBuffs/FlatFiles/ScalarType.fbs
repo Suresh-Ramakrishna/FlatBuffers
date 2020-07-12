@@ -1,0 +1,13 @@
+﻿table ScalarTypes {
+  byteType: byte;
+  ubyteType: ubyte;
+  boolType: bool;
+  shortType: short;
+  ushortType: ushort;
+  inttype: int;
+  uintType: uint;
+  floatType: float;
+  longType: long;
+  ulongType: ulong;
+  doubleType: double;
+}

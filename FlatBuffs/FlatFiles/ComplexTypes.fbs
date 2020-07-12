@@ -1,0 +1,14 @@
+﻿enum Color : byte { Red = 1, Green, Blue }
+
+struct Axis {
+  x:float;
+  y:float;
+  z:float;
+}
+table ComplexTypes {
+  intVectorType: [int];
+  stringType: string;
+  enumType: Color = Red;
+  structType: Axis;
+}
+root_type ComplexTypes;
