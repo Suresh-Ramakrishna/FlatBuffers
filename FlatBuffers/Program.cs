@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,9 @@ namespace FlatBuffers
             AssertComplexType();
             AssertMonsterType();
             AssertObject();
+            StoreMultipleObjectInaFile();
         }
+
         static void AssertScalarType()
         {
             //initial buffer size
@@ -29,6 +32,7 @@ namespace FlatBuffers
             var dScalarType = ScalarType.GetRootAsScalarType(buffer);
             Assert.IsTrue(dScalarType.BoolType);
         }
+
         static void AssertComplexType()
         {
             //initial buffer size
@@ -43,6 +47,7 @@ namespace FlatBuffers
             var intVector = dComplexType.GetIntVectorTypeArray(); // To get array
             Assert.AreEqual(intVector.Length, 5);
         }
+
         static void AssertMonsterType()
         {
             FlatBufferBuilder fbb = new FlatBufferBuilder(1024);
@@ -55,6 +60,7 @@ namespace FlatBuffers
 
             Assert.AreEqual(Color.Red, dMonster.Color);
         }
+
         static void AssertObject()
         {
             var fbuilder = new FlatBufferBuilder(50);
@@ -72,6 +78,36 @@ namespace FlatBuffers
             var t0 = table.bb.GetInt(table.__offset(offs) + table.bb_pos);
             offs += 2;
             var t1 = table.bb.GetLong(table.__offset(offs) + table.bb_pos);
+        }
+
+        static void StoreMultipleObjectInaFile()
+        {
+            using (var outputStream = new BinaryWriter(File.Create("data.dat")))
+            {
+                outputStream.Write(0); //indicates number of demands in the file.
+                for (int i = 0; i < 10; i++)
+                {
+                    FlatBufferBuilder fbb = new FlatBufferBuilder(1024);
+                    var scalarTypeOffset = Helper.BuildScalarType(fbb);
+                    fbb.Finish(scalarTypeOffset.Value);
+                    byte[] serializedData = fbb.SizedByteArray();
+                    outputStream.Write(serializedData.Length);
+                    outputStream.Write(serializedData);
+                }
+                outputStream.Seek(0, SeekOrigin.Begin);
+                outputStream.Write(10); //replaces the value written at the top which indicates the number of demands.
+            }
+            using (var ipStream = new BinaryReader(File.OpenRead("data.dat")))
+            {
+                var count = ipStream.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    var size = ipStream.ReadInt32();
+                    var bytes = ipStream.ReadBytes(size);
+                    var byteBuf = new ByteBuffer(bytes);
+                    var dScalarType = ScalarType.GetRootAsScalarType(byteBuf);
+                }
+            }
         }
     }
 }
