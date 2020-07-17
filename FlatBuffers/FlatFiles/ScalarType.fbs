@@ -1,4 +1,4 @@
-﻿table ScalarTypes {
+﻿table ScalarType {
   byteType: byte;
   ubyteType: ubyte;
   boolType: bool;

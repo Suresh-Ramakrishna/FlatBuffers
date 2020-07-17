@@ -6,15 +6,15 @@ using global::System;
 using global::System.Collections.Generic;
 using global::Google.FlatBuffers;
 
-public struct ComplexTypes : IFlatbufferObject
+public struct ComplexType : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
   public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
-  public static ComplexTypes GetRootAsComplexTypes(ByteBuffer _bb) { return GetRootAsComplexTypes(_bb, new ComplexTypes()); }
-  public static ComplexTypes GetRootAsComplexTypes(ByteBuffer _bb, ComplexTypes obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public static ComplexType GetRootAsComplexType(ByteBuffer _bb) { return GetRootAsComplexType(_bb, new ComplexType()); }
+  public static ComplexType GetRootAsComplexType(ByteBuffer _bb, ComplexType obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
-  public ComplexTypes __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public ComplexType __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public int IntVectorType(int j) { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(__p.__vector(o) + j * 4) : (int)0; }
   public int IntVectorTypeLength { get { int o = __p.__offset(4); return o != 0 ? __p.__vector_len(o) : 0; } }
@@ -34,7 +34,7 @@ public struct ComplexTypes : IFlatbufferObject
   public Color EnumType { get { int o = __p.__offset(8); return o != 0 ? (Color)__p.bb.GetSbyte(o + __p.bb_pos) : Color.Red; } }
   public Axis? StructType { get { int o = __p.__offset(10); return o != 0 ? (Axis?)(new Axis()).__assign(o + __p.bb_pos, __p.bb) : null; } }
 
-  public static void StartComplexTypes(FlatBufferBuilder builder) { builder.StartTable(4); }
+  public static void StartComplexType(FlatBufferBuilder builder) { builder.StartTable(4); }
   public static void AddIntVectorType(FlatBufferBuilder builder, VectorOffset intVectorTypeOffset) { builder.AddOffset(0, intVectorTypeOffset.Value, 0); }
   public static VectorOffset CreateIntVectorTypeVector(FlatBufferBuilder builder, int[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddInt(data[i]); return builder.EndVector(); }
   public static VectorOffset CreateIntVectorTypeVectorBlock(FlatBufferBuilder builder, int[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
@@ -42,11 +42,11 @@ public struct ComplexTypes : IFlatbufferObject
   public static void AddStringType(FlatBufferBuilder builder, StringOffset stringTypeOffset) { builder.AddOffset(1, stringTypeOffset.Value, 0); }
   public static void AddEnumType(FlatBufferBuilder builder, Color enumType) { builder.AddSbyte(2, (sbyte)enumType, 1); }
   public static void AddStructType(FlatBufferBuilder builder, Offset<Axis> structTypeOffset) { builder.AddStruct(3, structTypeOffset.Value, 0); }
-  public static Offset<ComplexTypes> EndComplexTypes(FlatBufferBuilder builder) {
+  public static Offset<ComplexType> EndComplexType(FlatBufferBuilder builder) {
     int o = builder.EndTable();
-    return new Offset<ComplexTypes>(o);
+    return new Offset<ComplexType>(o);
   }
-  public static void FinishComplexTypesBuffer(FlatBufferBuilder builder, Offset<ComplexTypes> offset) { builder.Finish(offset.Value); }
-  public static void FinishSizePrefixedComplexTypesBuffer(FlatBufferBuilder builder, Offset<ComplexTypes> offset) { builder.FinishSizePrefixed(offset.Value); }
+  public static void FinishComplexTypeBuffer(FlatBufferBuilder builder, Offset<ComplexType> offset) { builder.Finish(offset.Value); }
+  public static void FinishSizePrefixedComplexTypeBuffer(FlatBufferBuilder builder, Offset<ComplexType> offset) { builder.FinishSizePrefixed(offset.Value); }
 };
 

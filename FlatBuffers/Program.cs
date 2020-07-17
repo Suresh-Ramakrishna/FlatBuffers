@@ -4,106 +4,74 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.FlatBuffers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FlatBuffs
+namespace FlatBuffers
 {
     class Program
     {
         static void Main(string[] args)
         {
-            ScalarTypesBuilder();
-            ComplexTypesBuilder();
-            MonstaerTypesBuilder();
+            AssertScalarType();
+            AssertComplexType();
+            AssertMonsterType();
+            AssertObject();
         }
-        static void ScalarTypesBuilder()
+        static void AssertScalarType()
         {
-            FlatBufferBuilder builder = new FlatBufferBuilder(1024); //initial buffer size
-            ScalarTypes.StartScalarTypes(builder);
-            ScalarTypes.AddByteType(builder, 1);
-            ScalarTypes.AddUbyteType(builder, 2);
-            ScalarTypes.AddBoolType(builder, true);
-            ScalarTypes.AddShortType(builder, 3);
-            ScalarTypes.AddUshortType(builder, 4);
-            ScalarTypes.AddInttype(builder, 5);
-            ScalarTypes.AddUintType(builder, 6);
-            ScalarTypes.AddFloatType(builder, 7.05f);
-            ScalarTypes.AddLongType(builder, 8);
-            ScalarTypes.AddUlongType(builder, 9);
-            ScalarTypes.AddDoubleType(builder, 10.125);
-            ScalarTypes.AddDoubleType(builder, 11.05); //Note: AddDoubleType is invoked twice, DoubleType field will be set to value passed by last invocation.
+            //initial buffer size
+            FlatBufferBuilder fbb = new FlatBufferBuilder(1024);
+            var scalarTypeOffset = Helper.BuildScalarType(fbb);
+            fbb.Finish(scalarTypeOffset.Value);
 
-            var scalarType = ScalarTypes.EndScalarTypes(builder);
-            builder.Finish(scalarType.Value);
-            byte[] serializedBuffer = builder.SizedByteArray();
+            byte[] serializedData = fbb.SizedByteArray();
+            var buffer = new ByteBuffer(serializedData);
+            var dScalarType = ScalarType.GetRootAsScalarType(buffer);
+            Assert.IsTrue(dScalarType.BoolType);
+        }
+        static void AssertComplexType()
+        {
+            //initial buffer size
+            FlatBufferBuilder fbb = new FlatBufferBuilder(1024);
+            var complexTypeOffset = Helper.BuildComplexType(fbb);
+            fbb.Finish(complexTypeOffset.Value);
+
+            byte[] serializedBuffer = fbb.SizedByteArray();
+            var buffer = new ByteBuffer(serializedBuffer);
+            var dComplexType = ComplexType.GetRootAsComplexType(buffer);
+
+            var intVector = dComplexType.GetIntVectorTypeArray(); // To get array
+            Assert.AreEqual(intVector.Length, 5);
+        }
+        static void AssertMonsterType()
+        {
+            FlatBufferBuilder fbb = new FlatBufferBuilder(1024);
+            var monsterTypeOffset = Helper.BuildMonster(fbb);
+            fbb.Finish(monsterTypeOffset.Value);
+            byte[] serializedBuffer = fbb.SizedByteArray(); //Gets serialized instance as byte array
 
             var buffer = new ByteBuffer(serializedBuffer);
-            var deserializedScalarType = ScalarTypes.GetRootAsScalarTypes(buffer);
+            var dMonster = Monster.GetRootAsMonster(buffer); // Gets deserialized object
+
+            Assert.AreEqual(Color.Red, dMonster.Color);
         }
-        static void ComplexTypesBuilder()
+        static void AssertObject()
         {
-            FlatBufferBuilder builder = new FlatBufferBuilder(1024); //initial buffer size
-            StringOffset stringOffset = builder.CreateString("Some random string");
+            var fbuilder = new FlatBufferBuilder(50);
+            fbuilder.StartTable(2); //Creates a table with 2 fields. These fields only has index and no Name
+            fbuilder.AddInt(0, 10, int.MinValue);
+            fbuilder.AddLong(1, 20, long.MinValue);
+            var offset = fbuilder.EndTable();
+            fbuilder.Finish(offset);
+            var keyBytes = fbuilder.SizedByteArray();
 
-            ComplexTypes.StartIntVectorTypeVector(builder, 5);
-            for (int i = 4; i >= 0; i--) //Note 1st item should be added in last index.
-            {
-                builder.AddInt(i);
-            }
-            var intVectorOffset = builder.EndVector();
-            ComplexTypes.StartComplexTypes(builder);
-            ComplexTypes.AddStringType(builder, stringOffset);
-            ComplexTypes.AddIntVectorType(builder, intVectorOffset);
-            ComplexTypes.AddEnumType(builder, Color.Green);
-            ComplexTypes.AddStructType(builder, Axis.CreateAxis(builder, 1.1f, 2.1f, 3.1f));
-            var complexrType = ComplexTypes.EndComplexTypes(builder);
-            
-            builder.Finish(complexrType.Value);
-            byte[] serializedBuffer = builder.SizedByteArray();
-
-            var buffer = new ByteBuffer(serializedBuffer);
-            var deserializedScalarType = ComplexTypes.GetRootAsComplexTypes(buffer);
-
-            deserializedScalarType.GetIntVectorTypeArray(); // To get array
-        }
-        static void MonstaerTypesBuilder()
-        {
-            var builder = new FlatBufferBuilder(1024);
-
-            var sword = Weapon.CreateWeapon(builder, builder.CreateString("Sword"), 3);
-            var axe = Weapon.CreateWeapon(builder, builder.CreateString("Axe"), 5);
-
-            Monster.StartInventoryVector(builder, 10);
-            for (int i = 9; i >= 0; i--)
-                builder.AddByte((byte)i);
-            var inventoryOffset = builder.EndVector();
-
-            var weapons = new Offset<Weapon>[2] { sword, axe };
-            var weaponsOffset = Monster.CreateWeaponsVector(builder, weapons);
-
-            Monster.StartPathVector(builder, 2); //Vector of structs
-            Vec3.CreateVec3(builder, 1.0f, 2.0f, 3.0f);
-            Vec3.CreateVec3(builder, 4.0f, 5.0f, 6.0f);
-            var path = builder.EndVector();
-
-            var nameOffset = builder.CreateString("Orc");
-            Monster.StartMonster(builder);
-            Monster.AddPos(builder, Vec3.CreateVec3(builder, 1.0f, 2.0f, 3.0f));
-            Monster.AddHp(builder, 300);
-            Monster.AddName(builder, nameOffset);
-            Monster.AddInventory(builder, inventoryOffset);
-            Monster.AddColor(builder, Color.Red);
-            Monster.AddWeapons(builder, weaponsOffset);
-            Monster.AddEquippedType(builder, Equipment.Weapon); //Type of union stored
-            Monster.AddEquipped(builder, axe.Value); // Value of union
-            Monster.AddPath(builder, path);
-            var orc = Monster.EndMonster(builder);
-
-            builder.Finish(orc.Value); 
-            byte[] serializedBuffer = builder.SizedByteArray(); //Gets serialized instance as byte array
-
-            var buffer = new ByteBuffer(serializedBuffer);
-            var monster = Monster.GetRootAsMonster(buffer); // Gets deserialized object
-
+            var byteBuffer = new ByteBuffer(keyBytes);
+            var bb_pos = byteBuffer.GetInt(byteBuffer.Position) + byteBuffer.Position; //+ byteBuffer.Position is needed when a file has multiple objects to read
+            var table = new Table(bb_pos, byteBuffer);
+            var offs = 4;
+            var t0 = table.bb.GetInt(table.__offset(offs) + table.bb_pos);
+            offs += 2;
+            var t1 = table.bb.GetLong(table.__offset(offs) + table.bb_pos);
         }
     }
 }

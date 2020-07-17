@@ -5,10 +5,10 @@ struct Axis {
   y:float;
   z:float;
 }
-table ComplexTypes {
+table ComplexType {
   intVectorType: [int];
   stringType: string;
   enumType: Color = Red;
   structType: Axis;
 }
-root_type ComplexTypes;
+root_type ComplexType;
