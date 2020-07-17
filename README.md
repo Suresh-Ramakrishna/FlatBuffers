@@ -12,3 +12,5 @@ flatc generates a .cs file which contains classes that can be used within our pr
 Unline ProtoBuff, FlatBuffers does not have any nuget package. You need to directly include Google's .NET FlatBuffers project to your solution in order to work with Flat Buffers.
 
 >You can download the project from here - https://github.com/google/flatbuffers/tree/master/net
+
+Note: Google.FlatBuffers project is the source from Google. There is no Nuget package to integrate Google Flatbuffers directly in our project.
