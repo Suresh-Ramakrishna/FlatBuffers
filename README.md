@@ -13,4 +13,4 @@ Unline ProtoBuff, FlatBuffers does not have any nuget package. You need to direc
 
 >You can download the project from here - https://github.com/google/flatbuffers/tree/master/net
 
-Note: Google.FlatBuffers project is the source from Google. There is no Nuget package to integrate Google Flatbuffers directly in our project.
+<b>Note: </b>Google.FlatBuffers project is the source from Google. There is no Nuget package to integrate Google Flatbuffers directly in our project.
