@@ -14,35 +14,21 @@
  * limitations under the License.
  */
 
-namespace FlatBuffers
+namespace Google.FlatBuffers
 {
     /// <summary>
-    /// Offset class for typesafe assignments.
+    /// All structs in the generated code derive from this class, and add their own accessors.
     /// </summary>
-    public struct Offset<T> where T : struct
+    public struct Struct
     {
-        public int Value;
-        public Offset(int value)
-        {
-            Value = value;
-        }
-    }
+        public int bb_pos { get; private set; }
+        public ByteBuffer bb { get; private set; }
 
-    public struct StringOffset
-    {
-        public int Value;
-        public StringOffset(int value)
+        // Re-init the internal state with an external buffer {@code ByteBuffer} and an offset within.
+        public Struct(int _i, ByteBuffer _bb) : this()
         {
-            Value = value;
-        }
-    }
-
-    public struct VectorOffset
-    {
-        public int Value;
-        public VectorOffset(int value)
-        {
-            Value = value;
+            bb = _bb;
+            bb_pos = _i;
         }
     }
 }

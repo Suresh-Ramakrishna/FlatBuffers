@@ -14,15 +14,35 @@
  * limitations under the License.
  */
 
-namespace FlatBuffers
+namespace Google.FlatBuffers
 {
     /// <summary>
-    /// This is the base for both structs and tables.
+    /// Offset class for typesafe assignments.
     /// </summary>
-    public interface IFlatbufferObject
+    public struct Offset<T> where T : struct
     {
-        void __init(int _i, ByteBuffer _bb);
+        public int Value;
+        public Offset(int value)
+        {
+            Value = value;
+        }
+    }
 
-        ByteBuffer ByteBuffer { get; }
+    public struct StringOffset
+    {
+        public int Value;
+        public StringOffset(int value)
+        {
+            Value = value;
+        }
+    }
+
+    public struct VectorOffset
+    {
+        public int Value;
+        public VectorOffset(int value)
+        {
+            Value = value;
+        }
     }
 }
